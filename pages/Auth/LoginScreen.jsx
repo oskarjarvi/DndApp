@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect} from "react";
 import {
   View,
   Text,
@@ -6,29 +6,40 @@ import {
   StyleSheet,
   ImageBackground
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "react-native-elements";
 import Background from "../../assets/background.jpg";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
+import { updateEmail, updatePassword, login, getUser } from '../../redux/actions/user'
+import Firebase  from '../../config/firebase'
+ const Login =(props) => {
+   useEffect(() =>{
+    Firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        props.getUser(user.uid)
+        if (props.user != null) {
+                    props.navigation.navigate('App')
+        }
+      } 
+    });
+   },[])
 
- const SignUp =(props) => {
-  
-  const handleSubmit = () => 
+  const handleLogin = () => 
   {
-    props.signup()
+    props.login()
     props.navigation.navigate('App')
   }
   const renderButton = () => {
     return (
       <View>
-        <TouchableOpacity onPress={() => handleSubmit()}>
-          <Text style={styles.submitButton}>Sign up</Text>
+        <TouchableOpacity onPress={() => handleLogin()}>
+          <Text style={styles.submitButton}>Login</Text>
         </TouchableOpacity>
       </View>
     );
   };
-  
+
 
   return (
     <ImageBackground
@@ -37,6 +48,10 @@ import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
       style={styles.background}
     >
       <View style={styles.container}>
+        <LinearGradient
+          style={styles.backgroundFilter}
+          colors={["#D4EFDF", "#145A32", "#145A32"]}
+        />
         <View style={styles.inputContainer}>
           <Input
             containerStyle={styles.inputFieldwrapper}
@@ -47,8 +62,7 @@ import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
             labelStyle={{ color: "white", paddingBottom: 20 }}
             onChangeText={email => props.updateEmail(email)}
             leftIcon={{ type: "font-awesome", name: "envelope" }}
-            autoCapitalize='none'
-
+            // onChangeText={data => setFormData({ ...formData, email: data })}
           />
           <Input
             containerStyle={styles.inputFieldwrapper}
@@ -59,17 +73,23 @@ import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
             labelStyle={{ color: "white", paddingBottom: 20 }}
             leftIcon={{ type: "font-awesome", name: "lock" }}
             onChangeText={password => props.updatePassword(password)}
+            onSubmitEditing={() => handleLogin()}
+            // onChangeText={data => setFormData({ ...formData, password: data })}
             secureTextEntry={true}
           />
         </View>
-    
-        {renderButton()}    
+        {renderButton()}
+        <TouchableOpacity onPress={() => props.navigation.navigate('SignUp')}>
+          <Text style={{ color: "white", opacity: 0.6 }}>
+            Dont have an account yet? Sign up here
+          </Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
 }
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ updateEmail, updatePassword, signup }, dispatch)
+  return bindActionCreators({ updateEmail, updatePassword, login, getUser}, dispatch)
 }
 
 const mapStateToProps = state => {
@@ -81,7 +101,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignUp)
+)(Login)
 
 const styles = StyleSheet.create({
   container: {

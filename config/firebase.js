@@ -1,10 +1,24 @@
+import firebase from 'firebase'
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  DATABASE_URL,
+  PROJECT_ID,
+  MESSAGE_SENDER_ID,
+  APP_ID
+} from 'react-native-dotenv'
+import 'firebase/firestore'
+
 const firebaseConfig = {
-  apiKey: "AIzaSyD__3JBrOrF45PYf9VcmraSdhHY3iTMfPk",
-  authDomain: "dungeonsanddragonsapp.firebaseapp.com",
-  databaseURL: "https://dungeonsanddragonsapp.firebaseio.com",
-  projectId: "dungeonsanddragonsapp",
-  storageBucket: "dungeonsanddragonsapp.appspot.com",
-  messagingSenderId: "1022528531288",
-  appId: "1:1022528531288:web:05520a640cd9f644af532d"
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  databaseURL: DATABASE_URL,
+  projectId: PROJECT_ID,
+  storageBucket: 'dungeonsanddragonsapp.appspot.com',
+  messagingSenderId: MESSAGE_SENDER_ID,
+  appId: APP_ID
 };
-export default firebaseConfig
+const Firebase = firebase.initializeApp(firebaseConfig)
+
+export const db = firebase.firestore()
+export default Firebase
