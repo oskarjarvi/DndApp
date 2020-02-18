@@ -1,8 +1,8 @@
-import * as firebase from "firebase";
+import * as Firebase from "firebase";
 
 const api = {
   getCharacters(userRef) {
-    firebase
+    Firebase
       .database()
       .ref(`user/characters/${userRef}`)
       .once("value", data => {
@@ -33,7 +33,10 @@ const api = {
   async getFeatures() {
     let data = await getData("features");
     return data.results;
-  }
+  },
+  Login(params){ return Firebase.auth().signInWithEmailAndPassword(params.email, params.password)},
+
+ SignUp (params) {return Firebase.auth().createUserWithEmailAndPassword(params.email, params.password)}
 };
 export const getData = url => {
   return fetch(`http://dnd5eapi.co/api/${url}`)
@@ -43,12 +46,5 @@ export const getData = url => {
     })
     .catch(error => console.log(error));
 };
-// export const postData = url => {
-//   return fetch(`http://dnd5eapi.co/api/${url}`)
-//     .then(res => res.json())
-//     .then(response => {
-//       return response;
-//     })
-//     .catch(error => console.log(error));
-// };
+
 export default api;

@@ -1,16 +1,18 @@
 import { combineReducers } from 'redux'
-import { LOGIN, SIGNUP, UPDATE_EMAIL, UPDATE_PASSWORD } from '../actions/user'
+import { LOGIN, SIGNUP, LOGOUT,LOGIN_SUCCESS } from '../actions/user'
 
-const user = (state = {}, action) => {
+const user = (state = null, action) => {
     switch (action.type) {
         case LOGIN:
             return action.payload
+        case LOGIN_SUCCESS:
+            return {
+                ...state, user: action.payload
+            }
         case SIGNUP:
             return action.payload
-        case UPDATE_EMAIL:
-            return { ...state, email: action.payload }
-        case UPDATE_PASSWORD:
-            return { ...state, password: action.payload }
+        case LOGOUT:
+            return null;
         default:
             return state
     }

@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -9,26 +9,27 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "react-native-elements";
 import Background from "../../assets/background.jpg";
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { updateEmail, updatePassword, login, getUser } from '../../redux/actions/user'
-import Firebase  from '../../config/firebase'
- const Login =(props) => {
-   useEffect(() =>{
-    Firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        props.getUser(user.uid)
-        if (props.user != null) {
-                    props.navigation.navigate('App')
-        }
-      } 
-    });
-   },[])
+import { Login } from '../../redux/actions/user'
+import { useCurrentUser } from "../../utils/customHooks";
+import { useDispatch } from 'react-redux'
 
-  const handleLogin = () => 
-  {
-    props.login()
-    props.navigation.navigate('App')
+const LoginPage = (props) => {
+  const user = useCurrentUser()
+  const dispatch = useDispatch()
+
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  useEffect(() => {
+    if (user) {
+      props.navigation.navigate('App')
+    }
+  }, [props.user])
+  const handleLogin = () => {
+     dispatch(Login(formData))
+    if(props.user)
+    {
+      props.navigation.navigate('App')
+    }
   }
   const renderButton = () => {
     return (
@@ -57,24 +58,23 @@ import Firebase  from '../../config/firebase'
             containerStyle={styles.inputFieldwrapper}
             inputContainerStyle={styles.inputWrapperStyle}
             inputStyle={styles.textInput}
-            value={props.user.email}
+            value={formData.email}
             label="Enter your email here"
             labelStyle={{ color: "white", paddingBottom: 20 }}
-            onChangeText={email => props.updateEmail(email)}
+
             leftIcon={{ type: "font-awesome", name: "envelope" }}
-            // onChangeText={data => setFormData({ ...formData, email: data })}
+            onChangeText={data => setFormData({ ...formData, email: data })}
           />
           <Input
             containerStyle={styles.inputFieldwrapper}
             inputStyle={styles.textInput}
             inputContainerStyle={styles.inputWrapperStyle}
             label="Enter your password here"
-            value={props.user.password}
+            value={formData.password}
             labelStyle={{ color: "white", paddingBottom: 20 }}
             leftIcon={{ type: "font-awesome", name: "lock" }}
-            onChangeText={password => props.updatePassword(password)}
             onSubmitEditing={() => handleLogin()}
-            // onChangeText={data => setFormData({ ...formData, password: data })}
+            onChangeText={data => setFormData({ ...formData, password: data })}
             secureTextEntry={true}
           />
         </View>
@@ -88,20 +88,20 @@ import Firebase  from '../../config/firebase'
     </ImageBackground>
   );
 }
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ updateEmail, updatePassword, login, getUser}, dispatch)
-}
+// const mapDispatchToProps = dispatch => {
+//   return bindActionCreators({ updateEmail, updatePassword, login, getUser }, dispatch)
+// }
 
 const mapStateToProps = state => {
   return {
-      user: state.user
+    user: state.user
   }
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
-)(Login)
+  // mapDispatchToProps
+)(LoginPage)
 
 const styles = StyleSheet.create({
   container: {
