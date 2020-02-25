@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux'
-import { LOGIN, SIGNUP, LOGOUT,LOGIN_SUCCESS } from '../actions/user'
+import { LOGIN_REQUEST, SIGNUP, LOGOUT,LOGIN_SUCCESS } from '../actions/user'
 
 const user = (state = null, action) => {
     switch (action.type) {
-        case LOGIN:
+        case LOGIN_REQUEST:
             return action.payload
         case LOGIN_SUCCESS:
+            console.log('reducer',action)
             return {
                 ...state, user: action.payload
             }

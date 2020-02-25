@@ -1,42 +1,46 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
 import Api from '../../utils/Api';
-import { ActionTypes } from '../actions/user';
+import { LOGIN_REQUEST, SIGNUP,LOGIN_SUCCESS } from '../actions/user'
 
-function* fetchCharacters(action) {
-    try {
-        const characters = yield call(Api.getCharacters, action.payload.userId)
-        yield put({ type: ActionTypes.GET_CHARACTERS_SUCCESS, characters: characters })
-    }
-    catch (e) {
-        yield put({ type: ActionTypes.GET_CHARACTERS_FAILED, message: e.message })
-    }
-}
+
+// function* fetchCharacters(action) {
+//     try {
+
+//         const characters = yield call(Api.getCharacters, action.payload.userId)
+//         yield put({ type: GET_CHARACTERS_SUCCESS, payload: characters })
+//     }
+//     catch (e) {
+//         yield put({ type: GET_CHARACTERS_FAILED, message: e.message })
+//     }
+// }
 function* login(action) {
     try {
         const response = yield call(Api.Login, {...action.payload})
         if(response)
         {
-            yield put({type: ActionTypes.LOGIN_SUCCESS, data: response})
+            console.log('yep')
+            yield put({type: 'LOGIN_SUCCESS', user: response})
         }
         else {
             console.log(response)
         }
     } catch (e) {
-        yield put({type: ActionTypes.LOGIN_ERROR, message: e.message})
+        console.log('eyyy')
+        yield put({type: 'LOGIN_ERROR', message: e.message})
     }
 }
 function* signup(action) {
     try {
         const response = yield call(Api.SignUp, {...action.payload})
-        yield put({type: ActionTypes.SIGNUP_SUCCESS, data: response})
+        yield put({type: 'SIGNUP_SUCCESS', data: response})
     } catch (e) {
-        yield put({type: ActionTypes.SIGNUP_ERROR, message: e.message})
+        yield put({type: 'SIGNUP_ERROR', message: e.message})
     }
 }
 
 function* saga() {
-    yield takeLatest(ActionTypes.LOGIN_REQUEST, login)
-    yield takeLatest(ActionTypes.SIGNUP, signup)
-    yield takeLatest(ActionTypes.GET_CHARACTERS_REQUEST, fetchCharacters)
+    yield takeLatest('LOGIN_REQUEST', login)
+    yield takeLatest('SIGNUP', signup)
+
 }
 export default saga;

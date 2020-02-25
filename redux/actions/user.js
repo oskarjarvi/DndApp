@@ -14,7 +14,7 @@ export const ActionTypes = {
     GET_CHARACTERS_FAILED: 'GET_CHARACTERS_FAILED'
 }
 
-export const Login_REQUESTRequest = (data) => ({
+export const Login = (data) => ({
     type: ActionTypes.LOGIN_REQUEST,
     payload: data
 })

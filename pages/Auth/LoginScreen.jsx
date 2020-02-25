@@ -9,27 +9,26 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "react-native-elements";
 import Background from "../../assets/background.jpg";
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { Login } from '../../redux/actions/user'
 import { useCurrentUser } from "../../utils/customHooks";
 import { useDispatch } from 'react-redux'
 
 const LoginPage = (props) => {
-  const user = useCurrentUser()
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
   const [formData, setFormData] = useState({ email: '', password: '' })
+
   useEffect(() => {
+    console.log(user)
     if (user) {
       props.navigation.navigate('App')
     }
-  }, [props.user])
+  }, [user])
   const handleLogin = () => {
-     dispatch(Login(formData))
-    if(props.user)
-    {
-      props.navigation.navigate('App')
-    }
+      dispatch(Login(formData))
+
   }
   const renderButton = () => {
     return (
@@ -40,7 +39,6 @@ const LoginPage = (props) => {
       </View>
     );
   };
-
 
   return (
     <ImageBackground
@@ -92,16 +90,15 @@ const LoginPage = (props) => {
 //   return bindActionCreators({ updateEmail, updatePassword, login, getUser }, dispatch)
 // }
 
-const mapStateToProps = state => {
-  return {
-    user: state.user
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//     user: state.user
+//   }
+// }
 
-export default connect(
-  mapStateToProps,
+export default LoginPage
+  // mapStateToProps,
   // mapDispatchToProps
-)(LoginPage)
 
 const styles = StyleSheet.create({
   container: {
