@@ -1,18 +1,13 @@
 import * as Firebase from "firebase";
+import firestore from '@react-native-firebase/firestore';
 
 const api = {
   getCharacters(userRef) {
-    Firebase
-      .database()
-      .ref(`user/characters/${userRef}`)
-      .once("value", data => {
-        if (data.exists()) {
-          let values = Object.values(data.val());
-          if (values) {
-            return values;
-          }
-        }
-      });
+    const ref = firestore().collection('users').doc(userRef).collection('characters').get()
+  },
+  async addCharacter(userRef, character) {
+    const ref = firestore().collection('users')
+    return await ref.add({ ...character })
   },
   async getClasses() {
     let data = await getData("classes");
@@ -34,9 +29,9 @@ const api = {
     let data = await getData("features");
     return data.results;
   },
-  Login(params){ return Firebase.auth().signInWithEmailAndPassword(params.email, params.password)},
+  Login(params) { return Firebase.auth().signInWithEmailAndPassword(params.email, params.password) },
 
- SignUp (params) {return Firebase.auth().createUserWithEmailAndPassword(params.email, params.password)}
+  SignUp(params) { return Firebase.auth().createUserWithEmailAndPassword(params.email, params.password) }
 };
 export const getData = url => {
   return fetch(`http://dnd5eapi.co/api/${url}`)

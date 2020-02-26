@@ -3,51 +3,40 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SafeAreaView from "react-native-safe-area-view";
 import { useSafeArea } from "react-native-safe-area-context";
 import Firebase from '../config/firebase'
+import { globalStyles } from './sharedStyles'
+import CharacterPicker from "../components/characterPicker";
+import { useDispatch } from "react-redux";
+import { AddCharacter, Logout } from "../redux/actions/user";
+import { useCurrentUser } from "../utils/customHooks";
+
 export default function Home(props) {
   const insets = useSafeArea();
- const handleSignout = () => {
-  Firebase.auth().signOut()
-  props.navigation.navigate('Login')
-}
+  const dispatch = useDispatch();
+  const currentUser = useCurrentUser()
+  const handleSignout = () => {
+    Firebase.auth().signOut()
+    dispatch(Logout())
+    props.navigation.navigate('Login')
+  }
+  const data = {
+    user: currentUser.user.uid,
+    character: { race: 'elf', class: 'ranger', level: 1 }
+  }
   return (
     <SafeAreaView style={{ paddingTop: insets.top, flex: 1 }}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.menuOption}
-          onPress={() => {
-            props.navigation.navigate("Characters");
-          }}
-        >
-          <Text>Character</Text>
+      <View style={globalStyles.container}>
+        <CharacterPicker />
+        <TouchableOpacity onPress={() => dispatch(AddCharacter(data))}>
+          <Text style={{ color: 'white' }}>Add character</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuOption, styles.disabled]}>
-          <Text>Spellbook</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuOption, styles.disabled]}>
-          <Text>Bestiary</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuOption, styles.disabled]}>
-          <Text>Classbook</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.menuOption, styles.disabled]}>
-          <Text>Races</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuOption} onPress={() => handleSignout()}>
-          <Text>Sign out</Text>
+        <TouchableOpacity onPress={() => handleSignout()}>
+          <Text style={{ color: 'white' }}>Logout</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    alignContent: "stretch"
-  },
   menuOption: {
     height: "28%",
     justifyContent: "center",

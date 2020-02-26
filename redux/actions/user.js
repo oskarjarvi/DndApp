@@ -6,12 +6,18 @@ export const ActionTypes = {
     SIGNUP: 'SIGNUP',
     SIGNUP_SUCCESS: 'SIGNUP_SUCCESS',
     SIGNUP_ERROR: 'SIGNUP_ERROR',
-
     LOGIN_ERROR: 'LOGIN_ERROR',
     LOGIN_SUCCESS: 'LOGIN_SUCCESS',
     GET_CHARACTERS_REQUEST: ' GET_CHARACTERS_REQUEST',
     GET_CHARACTERS_SUCCESS: 'GET_CHARACTERS_SUCCESS',
-    GET_CHARACTERS_FAILED: 'GET_CHARACTERS_FAILED'
+    GET_CHARACTERS_FAILED: 'GET_CHARACTERS_FAILED',
+    ADD_CHARACTERS_REQUEST: ' ADD_CHARACTERS_REQUEST',
+    ADD_CHARACTERS_SUCCESS: 'ADD_CHARACTERS_SUCCESS',
+    ADD_CHARACTERS_FAILED: 'ADD_CHARACTERS_FAILED',
+    UPDATE_CHARACTERS_REQUEST: ' UPDATE_CHARACTERS_REQUEST',
+    UPDATE_CHARACTERS_SUCCESS:' UPDATE_CHARACTERS_SUCCESS',
+    UPDATE_CHARACTERS_FAILED:' UPDATE_CHARACTERS_FAILED',
+    SET_LOGGED_IN_USER: 'SET_LOGGED_IN_USER'
 }
 
 export const Login = (data) => ({
@@ -19,44 +25,25 @@ export const Login = (data) => ({
     payload: data
 })
 export const Signup = (data) => ({
-    type: ActionTypes.Signup,
+    type: ActionTypes.SIGNUP,
     payload: data
 })
-
-// export const getUser = uid => {
-//     return async (dispatch, getState) => {
-//         try {
-//             const user = await db
-//                 .collection('users')
-//                 .doc(uid)
-//                 .get()
-
-//             dispatch({ type: ActionTypes.LOGIN_REQUEST, payload: user.data() })
-//         } catch (e) {
-//             alert(e)
-//         }
-//     }
-// }
-
-// export const signup = () => {
-//     return async (dispatch, getState) => {
-//         try {
-//             const { email, password } = getState().user
-//             const response = await Firebase.auth().createUserWithEmailAndPassword(email, password)
-//             if (response.user.uid) {
-//                 const user = {
-//                     uid: response.user.uid,
-//                     email: email
-//                 }
-
-//                 db.collection('users')
-//                     .doc(response.user.uid)
-//                     .set(user)
-
-//                 dispatch({ type: ActionTypes.SIGNUP, payload: user })
-//             }
-//         } catch (e) {
-//             alert(e)
-//         }
-//     }
-// }
+export const Logout = () => ({
+    type:ActionTypes.LOGOUT
+})
+export const SetCurrentUser = (data) => ({
+    type:ActionTypes.SET_LOGGED_IN_USER,
+    payload:data
+})
+export const GetCurrentUserCharacters = (data) => ({
+    type:ActionTypes.GET_CHARACTERS_REQUEST,
+    payload:data
+})
+export const AddCharacter = (data) => ({
+    type:ActionTypes.ADD_CHARACTERS_REQUEST,
+    payload:data,
+})
+export const UpdateCharacter = (data) => ({
+    type:ActionTypes.UPDATE_CHARACTERS_REQUEST,
+    payload:data
+})

@@ -17,18 +17,16 @@ import { useDispatch } from 'react-redux'
 const LoginPage = (props) => {
 
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
+  const user = useCurrentUser()
   const [formData, setFormData] = useState({ email: '', password: '' })
 
   useEffect(() => {
-    console.log(user)
-    if (user) {
+    if (user&& user.user) {
       props.navigation.navigate('App')
     }
   }, [user])
   const handleLogin = () => {
       dispatch(Login(formData))
-
   }
   const renderButton = () => {
     return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,16 +9,26 @@ import {
 import { Input } from "react-native-elements";
 import Background from "../../assets/background.jpg";
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { Signup } from '../../redux/actions/user'
+import { useCurrentUser } from "../../utils/customHooks";
 
- const SignUp =(props) => {
-  
-  const handleSubmit = () => 
-  {
-    props.signup()
-    props.navigation.navigate('App')
+
+const SignUp = (props) => {
+
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  const dispatch = useDispatch()
+  const user = useCurrentUser()
+
+  const handleSubmit = () => {
+    dispatch(Signup(formData))
+    // props.navigation.navigate('App')
   }
+  useEffect(() => {
+    if (user && user.user) {
+      props.navigation.navigate('App')
+    }
+  }, [user])
   const renderButton = () => {
     return (
       <View>
@@ -28,7 +38,7 @@ import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
       </View>
     );
   };
-  
+
 
   return (
     <ImageBackground
@@ -42,46 +52,34 @@ import { updateEmail, updatePassword, signup } from '../../redux/actions/user'
             containerStyle={styles.inputFieldwrapper}
             inputContainerStyle={styles.inputWrapperStyle}
             inputStyle={styles.textInput}
-            value={props.user.email}
+            value={formData.email}
             label="Enter your email here"
             labelStyle={{ color: "white", paddingBottom: 20 }}
-            onChangeText={email => props.updateEmail(email)}
             leftIcon={{ type: "font-awesome", name: "envelope" }}
-            autoCapitalize='none'
-
+            onChangeText={data => setFormData({ ...formData, email: data })}
           />
           <Input
             containerStyle={styles.inputFieldwrapper}
             inputStyle={styles.textInput}
             inputContainerStyle={styles.inputWrapperStyle}
             label="Enter your password here"
-            value={props.user.password}
+            value={formData.password}
             labelStyle={{ color: "white", paddingBottom: 20 }}
             leftIcon={{ type: "font-awesome", name: "lock" }}
-            onChangeText={password => props.updatePassword(password)}
+            onSubmitEditing={() => handleLogin()}
+            onChangeText={data => setFormData({ ...formData, password: data })}
             secureTextEntry={true}
           />
         </View>
-    
-        {renderButton()}    
+
+        {renderButton()}
       </View>
     </ImageBackground>
   );
 }
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ updateEmail, updatePassword, signup }, dispatch)
-}
 
-const mapStateToProps = state => {
-  return {
-      user: state.user
-  }
-}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUp)
+export default SignUp
 
 const styles = StyleSheet.create({
   container: {

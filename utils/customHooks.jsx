@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Firebase  from '../config/firebase'
+import { useSelector, useDispatch } from 'react-redux';
+import { SetCurrentUser } from '../redux/actions/user'
 
 export function useCurrentUser() {
-  const [authenticatedUser, setAuthenticatedUser] = useState(null);
-  useEffect(() =>{
+  const dispatch = useDispatch()
+  const userState = useSelector((state) => state.user)
+  useEffect(() => {
     Firebase.auth().onAuthStateChanged(user => {
-        setAuthenticatedUser(user)
+        dispatch(SetCurrentUser(user))
     });
    },[])
-  return authenticatedUser;
+  return userState;
 }
